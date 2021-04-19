@@ -21,13 +21,13 @@ const contactSchema = new mongoose.Schema({
 
 const Contact = mongoose.model("Contact", contactSchema);
 
-app.get('/contacts', (req, res) => {
+app.get('/', (req, res) => {
     Contact.find()
         .then(data => res.json(data))
         .catch(err => res.status(400).json('Error' + err));
 });
 
-app.post('/contacts/add', (req, res) => {
+app.post('/add', (req, res) => {
     const newContact = new Contact(req.body);
   
     newContact.save()
