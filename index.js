@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 mongoose.connect(
-    uri,
+    'mongodb+srv://root:root@cluster0.tn7re.mongodb.net/test?retryWrites=true&w=majority',
     { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true },
     () => console.log('DB connected')
 );
