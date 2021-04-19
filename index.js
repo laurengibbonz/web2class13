@@ -3,7 +3,10 @@ const app = express();
 require('dotenv').config();
 const mongoose = require('mongoose');
 const uri = process.env.ATLAS_URI;
-const port = 3001;
+const port = process.env.PORT || 5000;
+const root = require('path').join(__dirname, 'portfolio', 'build');
+const cors = require('cors');
+app.use(cors());
 
 // was missing this code from class 12
 app.use(express.json());
@@ -21,19 +24,31 @@ const contactSchema = new mongoose.Schema({
 
 const Contact = mongoose.model("Contact", contactSchema);
 
-app.get('/', (req, res) => {
+app.get('/contacts', (req, res) => {
     Contact.find()
         .then(data => res.json(data))
         .catch(err => res.status(400).json('Error' + err));
 });
 
-app.post('/add', (req, res) => {
+app.post('/contacts/add', (req, res) => {
     const newContact = new Contact(req.body);
   
     newContact.save()
       .then(() => res.json('Contact added!'))
       .catch(err => res.status(400).json('Error: ' + err));
 });
+
+app.get('/contacts/delete/:id', (req, res) => {
+    Contact.findByIdAndDelete(req.params.id)
+    .then(data => res.json(data))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+app.use(express.static(root));
+app.get("*", (req, res) => {
+    res.sendFile('index.html', { root });
+});
+
 
 app.listen(
     port,
