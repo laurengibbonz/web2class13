@@ -1,19 +1,15 @@
 const express = require('express');
 const app = express();
-const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, './.env') });
+require('dotenv').config();
 const mongoose = require('mongoose');
-const port = process.env.PORT;
-const root = require('path').join(__dirname, 'portfolio', 'build');
+const port = 5000;
 const uri = process.env.ATLAS_URI;
-const cors = require('cors');
-app.use(cors());
 
 // was missing this code from class 12
 app.use(express.json());
 
 mongoose.connect(
-    'mongodb+srv://root:root@cluster0.tn7re.mongodb.net/test?retryWrites=true&w=majority',
+    uri,
     { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true },
     () => console.log('DB connected')
 );
@@ -38,18 +34,6 @@ app.post('/contacts/add', (req, res) => {
       .then(() => res.json('Contact added!'))
       .catch(err => res.status(400).json('Error: ' + err));
 });
-
-app.get('/contacts/delete/:id', (req, res) => {
-    Contact.findByIdAndDelete(req.params.id)
-    .then(data => res.json(data))
-    .catch(err => res.status(400).json('Error: ' + err));
-});
-
-app.use(express.static(root));
-app.get("*", (req, res) => {
-    res.sendFile('index.html', { root });
-});
-
 
 app.listen(
     port,
